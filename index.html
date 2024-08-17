@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>직장인 부캐 테스트</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .question {
+            margin: 40px 0; /* 질문과 버튼 사이에 간격 추가 */
+        }
+        .question h2 {
+            font-size: 1.2em;
+            margin-bottom: 20px; /* 질문과 버튼 사이 간격 추가 */
+        }
+        .answers button {
+            display: block; /* 버튼을 블록 레벨로 변경하여 줄바꿈 적용 */
+            padding: 15px 25px;
+            margin: 10px auto; /* 중앙 정렬 및 간격 추가 */
+            background-color: #F8E0E6;
+            color: black;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            border-radius: 10px; /* 버튼 테두리 둥글게 */
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* 약간의 그림자 추가 */
+            width: 80%; /* 버튼 너비를 반응형으로 설정 */
+            max-width: 400px; /* 최대 너비 제한 */
+        }
+        #result {
+            font-size: 1.2em;
+            margin-top: 30px;
+            display: none;
+        }
+        .result-button {
+            display: inline-block;
+            padding: 15px 25px;
+            background-color: #A9A9F5; /* 결과 버튼 배경색 */
+            color: black;
+            border: none;
+            font-size: 1.2em;
+            border-radius: 10px;
+            margin-top: 20px; /* 결과 텍스트와 쿠팡파트너스 간의 간격 추가 */
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+            width: auto;
+        }
+        .banner-container {
+            margin-top: 50px; /* 결과와 배너 사이 간격 추가 */
+            text-align: center;
+        }
+        .disclaimer {
+            font-size: 0.7em; /* 문구 크기를 더 작게 조정 */
+            color: #555;
+            margin-top: 10px;
+        }
+        iframe {
+            width: 100%;
+            max-width: 680px;
+            height: 140px;
+            border: none;
+            overflow: hidden;
+        }
+        .share-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #ababab; /* 버튼 배경색 */
+            color: black;
+            border: none;
+            font-size: 0.8em;
+            border-radius: 5px;
+            margin-top: 20px;
+            cursor: pointer;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .toast {
+            visibility: hidden;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            z-index: 1000;
+        }
+        .toast.show {
+            visibility: visible;
+            animation: fadeInOut 2s;
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <h1>직장인 부캐 테스트</h1>
+    <div id="quiz">
+        <div class="question" id="q1">
+            <h2>당신은 최근 회사에서 몇 번 웃었나요?</h2>
+            <div class="answers">
+                <button onclick="selectAnswer(1, 'A1')">하지만 대부분의 가짜웃음으로 도배되어버린 하루</button>
+                <button onclick="selectAnswer(1, 'A2')">진심으로 웃기도 해</button>
+            </div>
+        </div>
+        <div class="question" id="q2" style="display:none;">
+            <h2>출근길 지하철, 앞에 회사 동료가 보입니다. 이때 반응은?</h2>
+            <div class="answers">
+                <button onclick="selectAnswer(2, 'A1')">걷는 템포를 조절하여 마주치지 않도록 한다.</button>
+                <button onclick="selectAnswer(2, 'A2')">다가가 '야 오늘 아침 진짜 거지같지 않냐?' 라고 인사한다.</button>
+            </div>
+        </div>
+        <div class="question" id="q3" style="display:none;">
+            <h2>이직에 성공한 친구에게 더 궁금한 것은?</h2>
+            <div class="answers">
+                <button onclick="selectAnswer(3, 'A1')">이직한 회사의 워라밸</button>
+                <button onclick="selectAnswer(3, 'A2')">이직한 회사의 연봉</button>
+            </div>
+        </div>
+        <div class="question" id="q4" style="display:none;">
+            <h2>다음 중 내가 본능적으로 먼저 눌러본 것은?</h2>
+            <div class="answers">
+                <button onclick="selectAnswer(4, 'A1')">부장님의 시급한 업무 메일</button>
+                <button onclick="selectAnswer(4, 'A2')">매도각 재고 있는 주식 어플</button>
+            </div>
+        </div>
+        <div class="question" id="q5" style="display:none;">
+            <h2>로또 1등이 당첨된 나. 그래도 계속 일하실건가요?</h2>
+            <div class="answers">
+                <button onclick="selectAnswer(5, 'A1')">그동안 감사했습니다 부장님</button>
+                <button onclick="selectAnswer(5, 'A2')">예전보다 여유 있겠지만 일은 계속 할 것이다.</button>
+            </div>
+        </div>
+        <div class="question" id="q6" style="display:none;">
+            <h2>나의 신념과 반하는 일을 받게 되었을 경우는?</h2>
+            <div class="answers">
+                <button onclick="selectAnswer(6, 'A1')">일이 곧 나다. 이런 일은 할 수 없다.</button>
+                <button onclick="selectAnswer(6, 'A2')">일은 일이고, 나는 나야. 분리해서 생각한다.</button>
+            </div>
+        </div>
+        <div class="question" id="q7" style="display:none;">
+            <h2>최준생에게 해주고 싶은 말은?</h2>
+            <div class="answers">
+                <button onclick="selectAnswer(7, 'A1')">너의 개인생활을 존중해주는 곳을 택해</button>
+                <button onclick="selectAnswer(7, 'A2')">너의 능력을 인정해주는 곳을 택해</button>
+            </div>
+        </div>
+        <div class="question" id="q8" style="display:none;">
+            <h2>내가 퇴사하고 싶은 순간은?</h2>
+            <div class="answers">
+                <button onclick="selectAnswer(8, 'A1')">일을 해도 성장한다는 느낌을 받지 못할 때</button>
+                <button onclick="selectAnswer(8, 'A2')">일을 하면 할수록 자아가 사라져간다고 느낄 때</button>
+            </div>
+        </div>
+        <div class="question" id="q9" style="display:none;">
+            <h2>밸런스게임. 둘 중 더 나은 것은?</h2>
+            <div class="answers">
+                <button onclick="selectAnswer(9, 'A1')">다니면 다닐수록 생각이 없어지는 회사</button>
+                <button onclick="selectAnswer(9, 'A2')">다니면 다닐수록 고민이 많아지는 회사</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="result">
+        <h2>테스트 결과</h2>
+        <button class="result-button" id="resultText"></button>
+
+        <!-- 쿠팡 파트너스 배너 및 문구 추가 -->
+        <div class="banner-container">
+            <iframe src="https://ads-partners.coupang.com/widgets.html?id=800931&template=carousel&trackingCode=AF6702889&subId=&width=680&height=140&tsource=" frameborder="0" scrolling="no" referrerpolicy="unsafe-url" browsingtopics></iframe>
+            <p class="disclaimer">쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+            <button class="share-button" onclick="shareTest()">친구에게 공유하기</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">URL이 복사되었습니다!</div>
+
+    <script>
+        let a1Count = 0;
+        let currentQuestion = 1;
+
+        function selectAnswer(questionNumber, answer) {
+            if (answer === 'A1') {
+                a1Count++;
+            }
+
+            document.getElementById(`q${questionNumber}`).style.display = 'none';
+
+            currentQuestion++;
+            if (currentQuestion <= 9) {
+                document.getElementById(`q${currentQuestion}`).style.display = 'block';
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('result').style.display = 'block';
+
+            let resultText = '';
+            if (a1Count <= 2) {
+                resultText = '회사와 담쌓은 피곤핑';
+            } else if (a1Count <= 5) {
+                resultText = '워라밸이 중요한 균형핑';
+            } else if (a1Count <= 7) {
+                resultText = '일이 좋은 워커홀릭핑';
+            } else {
+                resultText = '일과 나는 하나. 물아일체핑';
+            }
+
+            document.getElementById('resultText').innerText = resultText;
+        }
+
+        function shareTest() {
+            // 현재 페이지 URL을 클립보드에 복사
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                // 토스트 얼럿 표시
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2000); // 2초 후에 토스트 제거
+            });
+        }
+    </script>
+</body>
+</html>
